@@ -1,314 +1,94 @@
-<!DOCTYPE html>
-<html lang="bn">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WBPSC Exam Quiz Platform</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Testbook-style Quiz</title>
+
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- MathJax for $...$ -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>WBPSC Exam Prep</h1>
-            </div>
-            <div class="user-info">
-                <span id="userName">Guest User</span>
-            </div>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <!-- Put your logo file named `logo.png` in same folder -->
+        <img src="logo.png" alt="Logo" id="siteLogo" onerror="this.style.display='none'"/>
+        <h1 id="title">Testbook-style Quiz</h1>
+      </div>
+
+      <div class="controls">
+        <div class="toggle-lang">
+          <label class="badge"><input type="radio" name="lang" value="en" checked> English</label>
+          <label class="badge"><input type="radio" name="lang" value="bn"> বাংলা</label>
         </div>
+
+        <select id="modeSelect" title="Scoring mode">
+          <option value="practice">Practice (No negative)</option>
+          <option value="exam">Exam (−0.33)</option>
+        </select>
+
+        <button id="restartBtn">Restart</button>
+      </div>
     </header>
 
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Available Tests</h3>
+    <div class="quiz-area">
+      <main>
+        <div class="card question-card">
+          <div class="question-header">
+            <div class="small">Question <span id="qIndex">1</span> / <span id="qTotal">0</span></div>
+            <div class="small" id="timeSpent">Time: 00:00</div>
+          </div>
+
+          <div class="question-box" id="questionBox"></div>
+          <div class="options" id="optionsList"></div>
+          <div class="rationale" id="rationaleBox" style="display:none"></div>
+
+          <div class="footer-actions">
+            <div>
+              <button id="markBtn">Mark & Next</button>
+              <button id="clearBtn">Clear</button>
             </div>
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <h4>WBPSC Food SI</h4>
-                    <ul>
-                        <li><a href="#" class="nav-link active" data-test="food-si-2023">WBPSC Food SI 2023</a></li>
-                        <li><a href="#" class="nav-link" data-test="food-si-2019">WBPSC Food SI 2019</a></li>
-                        <li><a href="#" class="nav-link" data-test="food-si-2014">WBPSC Food SI 2014</a></li>
-                    </ul>
-                </div>
-                <div class="nav-section">
-                    <h4>WBPSC Clerkship</h4>
-                    <ul>
-                        <li><a href="#" class="nav-link" data-test="clerkship-2019">WBPSC Clerkship 2019</a></li>
-                    </ul>
-                </div>
-                <div class="nav-section">
-                    <h4>Practice Tests</h4>
-                    <ul>
-                        <li><a href="#" class="nav-link" data-test="general-science">General Science (Physics)</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Test Selection View -->
-            <div id="testSelectionView" class="view active">
-                <div class="test-header">
-                    <h2>West Bengal All Exams Previous Year Papers Mock Test</h2>
-                </div>
-                
-                <div class="suggested-test">
-                    <h3>Suggested Next Test</h3>
-                    <div class="test-card featured">
-                        <div class="test-info">
-                            <h4>WBPSC Food SI 2023 16th Mar 2024 (Shift 1) Official Paper</h4>
-                            <p>100 Qs • 90 mins • 100.0 Marks</p>
-                            <div class="languages">
-                                <span class="lang-tag">English</span>
-                                <span class="lang-tag">Bengali</span>
-                            </div>
-                        </div>
-                        <button class="btn-start" data-test="food-si-2023">Start Test</button>
-                    </div>
-                </div>
-
-                <div class="test-categories">
-                    <div class="category">
-                        <h3>WBPSC Food SI Tests</h3>
-                        <div class="test-card">
-                            <div class="test-info">
-                                <h4>WBPSC Food SI 2019 Official Paper</h4>
-                                <p>100 Qs • 90 mins • 100.0 Marks</p>
-                                <div class="languages">
-                                    <span class="lang-tag">English</span>
-                                    <span class="lang-tag">Bengali</span>
-                                </div>
-                            </div>
-                            <button class="btn-start" data-test="food-si-2019">Start Test</button>
-                        </div>
-                        <div class="test-card">
-                            <div class="test-info">
-                                <h4>WBPSC Food SI 2014 Official Paper</h4>
-                                <p>150 Qs • 90 mins • 100.0 Marks</p>
-                                <div class="languages">
-                                    <span class="lang-tag">English</span>
-                                    <span class="lang-tag">Bengali</span>
-                                </div>
-                            </div>
-                            <button class="btn-start" data-test="food-si-2014">Start Test</button>
-                        </div>
-                    </div>
-
-                    <div class="category">
-                        <h3>WBPSC Clerkship Tests</h3>
-                        <div class="test-card">
-                            <div class="test-info">
-                                <h4>WBPSC Clerkship 2019 Official Paper (Held On 25th Jan 2020) Shift 1</h4>
-                                <p>100 Qs • 90 mins • 100.0 Marks</p>
-                                <div class="languages">
-                                    <span class="lang-tag">English</span>
-                                    <span class="lang-tag">Bengali</span>
-                                </div>
-                            </div>
-                            <button class="btn-start" data-test="clerkship-2019">Start Test</button>
-                        </div>
-                    </div>
-                </div>
+            <div>
+              <button id="prevBtn">Previous</button>
+              <button id="nextBtn">Save & Next</button>
             </div>
-
-            <!-- Instructions View -->
-            <div id="instructionsView" class="view">
-                <div class="instructions-container">
-                    <h2 id="testTitle">WBPSC Food SI 2019 Official Paper</h2>
-                    
-                    <div class="test-details">
-                        <div class="detail-item">
-                            <span class="label">Duration:</span>
-                            <span class="value" id="testDuration">90 Mins</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Maximum Marks:</span>
-                            <span class="value" id="testMarks">100.0</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Total Questions:</span>
-                            <span class="value" id="testQuestions">100</span>
-                        </div>
-                    </div>
-
-                    <div class="instructions-list">
-                        <h3>Instructions</h3>
-                        <ul>
-                            <li>The test contains <span id="totalQuestionsText">100</span> total questions.</li>
-                            <li>Each question has 4 options out of which only one is correct.</li>
-                            <li>You have to finish the test in <span id="durationText">90 minutes</span>.</li>
-                            <li>You will be awarded 1 mark for each correct answer and 0.33 will be deducted for each wrong answer.</li>
-                            <li>There is no negative marking for the questions that you have not attempted.</li>
-                            <li>You can write this test only once. Make sure that you complete the test before you submit.</li>
-                        </ul>
-                    </div>
-
-                    <div class="language-selection">
-                        <h3>Choose your Default Language</h3>
-                        <div class="language-options">
-                            <label class="language-option">
-                                <input type="radio" name="language" value="english" checked>
-                                <span>English</span>
-                            </label>
-                            <label class="language-option">
-                                <input type="radio" name="language" value="bengali">
-                                <span>বাংলা</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="agreement">
-                        <label class="agreement-checkbox">
-                            <input type="checkbox" id="agreeCheckbox">
-                            <span>I have read all the instructions carefully and have understood them. I agree not to cheat or use unfair means in this examination. I understand that using unfair means of any sort will lead to my immediate disqualification.</span>
-                        </label>
-                    </div>
-
-                    <div class="action-buttons">
-                        <button class="btn-secondary" id="btnBackToTests">Back to Tests</button>
-                        <button class="btn-primary" id="btnStartTest" disabled>Agree and Continue</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quiz View -->
-            <div id="quizView" class="view">
-                <div class="quiz-header">
-                    <div class="quiz-info">
-                        <h3 id="quizTitle">WBPSC Food SI 2019 Official Paper</h3>
-                        <div class="quiz-meta">
-                            <span id="currentQuestion">1</span> of <span id="totalQuestions">100</span>
-                        </div>
-                    </div>
-                    <div class="quiz-timer">
-                        <div class="timer" id="timer">01:29:44</div>
-                    </div>
-                </div>
-
-                <div class="quiz-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="progress-stats">
-                        <span>Time Left: <span id="timeLeft">01:29:44</span></span>
-                        <span>Attempted: <span id="attemptedCount">0</span></span>
-                        <span>Marked: <span id="markedCount">0</span></span>
-                    </div>
-                </div>
-
-                <div class="question-container">
-                    <div class="question-header">
-                        <span class="question-number" id="displayQuestionNumber">2.</span>
-                        <span class="marks-info">+1.0 -0.33</span>
-                    </div>
-                    
-                    <div class="question-content">
-                        <div class="question-text" id="questionText">
-                            Shanti Swarup Bhatnagar Award is associated with
-                        </div>
-                        
-                        <div class="options-container" id="optionsContainer">
-                            <!-- Options will be populated by JavaScript -->
-                        </div>
-                    </div>
-
-                    <div class="question-actions">
-                        <button class="btn-mark" id="btnMark">
-                            <span class="mark-icon">✓</span>
-                            Mark & Next
-                        </button>
-                        <button class="btn-clear" id="btnClear">Clear</button>
-                        <button class="btn-save" id="btnSave">Save & Next</button>
-                    </div>
-                </div>
-
-                <div class="quiz-footer">
-                    <div class="navigation-buttons">
-                        <button class="btn-nav" id="btnPrev">Previous</button>
-                        <button class="btn-nav" id="btnNext">Next</button>
-                    </div>
-                    <button class="btn-submit" id="btnSubmitQuiz">Submit Test</button>
-                </div>
-            </div>
-
-            <!-- Results View -->
-            <div id="resultsView" class="view">
-                <div class="results-container">
-                    <h2>Test Analysis</h2>
-                    
-                    <div class="results-summary">
-                        <div class="score-card">
-                            <div class="score-main">
-                                <span class="score" id="finalScore">2.5</span>
-                                <span class="score-total">/10</span>
-                            </div>
-                            <div class="score-label">Your Score</div>
-                        </div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <span class="stat-value" id="percentile">8.44%</span>
-                                <span class="stat-label">Percentile</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="accuracy">40%</span>
-                                <span class="stat-label">Accuracy</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="attemptedStats">10/10</span>
-                                <span class="stat-label">Qs. Attempted</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="correctStats">4</span>
-                                <span class="stat-label">Correct</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-value" id="incorrectStats">6</span>
-                                <span class="stat-label">Incorrect</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="results-actions">
-                        <button class="btn-primary" id="btnViewSolutions">View Solutions</button>
-                        <button class="btn-secondary" id="btnReattempt">Reattempt Test</button>
-                        <button class="btn-secondary" id="btnBackToTests2">Back to Tests</button>
-                    </div>
-
-                    <div class="leaderboard-section">
-                        <h3>Leaderboard</h3>
-                        <div class="leaderboard">
-                            <!-- Leaderboard will be populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Submit Confirmation Modal -->
-    <div id="submitModal" class="modal">
-        <div class="modal-content">
-            <h3>Confirm Submission</h3>
-            <p>Are you sure you want to submit the test?</p>
-            <div class="modal-actions">
-                <button class="btn-secondary" id="btnCancelSubmit">No</button>
-                <button class="btn-primary" id="btnConfirmSubmit">Yes</button>
-            </div>
+          </div>
         </div>
-    </div>
 
-    <script src="js/quiz1-data.js"></script>
-    <script src="js/app.js"></script>
+        <div class="footer-note small">
+          Embed in Blogger:
+          <code>&lt;iframe src="https://yourname.github.io/quiz-app/" style="width:100%;height:700px;border:0;"&gt;&lt;/iframe&gt;</code>
+        </div>
+      </main>
+
+      <aside class="side">
+        <div class="card score-card">
+          <div class="score">
+            <div class="small">Score</div>
+            <div class="big" id="scoreNum">0</div>
+            <div class="small">Correct: <span id="correctCount">0</span> | Incorrect: <span id="incorrectCount">0</span></div>
+            <div class="small">Accuracy: <span id="accuracy">0%</span></div>
+          </div>
+        </div>
+
+        <div class="card jump-panel">
+          <div class="small">Jump to question</div>
+          <div class="nav-grid" id="navGrid"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
